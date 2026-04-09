@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>CRT Security Terminal</title>
+
+<style>
+/* ===== RESET ===== */
+body {
+  margin: 0;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: monospace;
+}
+
+/* ===== SCENE ===== */
+.scene {
+  position: relative;
+  width: 900px;
+  height: 600px;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+
+/* ===== WINDOW (SKY) ===== */
+.window {
+  position: absolute;
+  right: 40px;
+  top: 40px;
+  width: 200px;
+  height: 140px;
+  border: 4px solid #222;
+  background: rgb(20, 20, 60);
+  transition: background 0.2s linear;
+}
+
+/* ===== CACTUS ===== */
+.cactus {
+  position: absolute;
+  right: 100px;
+  bottom: 80px;
+  width: 20px;
+  height: 40px;
+  background: #2ecc71;
+}
+
+/* ===== MONITOR ===== */
+.monitor {
+  position: absolute;
+  left: 50px;
+  top: 50px;
+  width: 600px;
+  height: 400px;
+  background: #050505;
+  border: 10px solid #333;
+  box-shadow: 0 0 20px rgba(0,255,0,0.2);
+  color: #33ff33;
+  padding: 10px;
+  overflow: hidden;
+}
+
+/* ===== CRT SCANLINES ===== */
+.monitor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.25) 0px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+/* ===== TERMINAL ===== */
+.terminal {
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: #33ff33;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ===== STATUS BAR ===== */
+.status {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #111;
+  padding: 4px;
+  font-size: 12px;
+  border-top: 1px solid #333;
+}
+
+/* ===== GLOW ===== */
+.glow {
+  text-shadow: 0 0 5px #33ff33;
+}
+</style>
+</head>
+
+<body>
+
+<div class="scene">
+
+  <div class="window" id="window"></div>
+  <div class="cactus"></div>
+
+  <div class="monitor">
+    <div class="terminal glow" id="terminal">
+> login admin
+ACCESS GRANTED
+
+> check_net
+STATUS: OK
+
+> _
+<span class="cursor"></span>
+    </div>
+
+    <div class="status" id="status">
+STATUS: OK | TIME: NIGHT
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+/*
+  time:
+  0 → ночь
+  0.25 → рассвет
+  0.5 → день
+  0.75 → закат
+  1 → ночь
+*/
+
+let time = 0;
+const speed = 0.00003; // полный цикл ~8-10 минут
+
+function updateCycle() {
+  time += speed;
+  if (time > 1) time = 0;
+
+  updateSky();
+  updateStatus();
+
+  requestAnimationFrame(updateCycle);
+}
+
+function updateSky() {
+  const sky = document.getElementById("window");
+
+  let r, g, b;
+
+  if (time < 0.25) {
+    // ночь → рассвет
+    let t = time / 0.25;
+    r = 20 + t * 100;
+    g = 20 + t * 80;
+    b = 60 + t * 120;
+
+  } else if (time < 0.5) {
+    // рассвет → день
+    let t = (time - 0.25) / 0.25;
+    r = 120 + t * 135;
+    g = 100 + t * 155;
+    b = 180 + t * 75;
+
+  } else if (time < 0.75) {
+    // день → закат
+    let t = (time - 0.5) / 0.25;
+    r = 255;
+    g = 255 - t * 155;
+    b = 255 - t * 200;
+
+  } else {
+    // закат → ночь
+    let t = (time - 0.75) / 0.25;
+    r = 255 - t * 235;
+    g = 100 - t * 80;
+    b = 55 - t * 20;
+  }
+
+  sky.style.background = `rgb(${r|0},${g|0},${b|0})`;
+}
+
+function updateStatus() {
+  const status = document.getElementById("status");
+
+  let label = "";
+
+  if (time < 0.25) label = "NIGHT";
+  else if (time < 0.5) label = "SUNRISE";
+  else if (time < 0.75) label = "DAY";
+  else label = "SUNSET";
+
+  status.innerText = "STATUS: OK | TIME: " + label;
+}
+
+updateCycle();
+
+</script>
+
+</body>
+</html>
