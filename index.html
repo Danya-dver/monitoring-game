@@ -2,139 +2,112 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>CRT FINAL TEXTURED</title>
+<title>Final Scene (Base64 Assets)</title>
 
 <style>
 body {
   margin: 0;
-  background: #06080c;
+  height: 100vh;
+  background: #05070b;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  font-family: monospace;
 }
 
 /* ===== СЦЕНА ===== */
 .scene {
+  position: relative;
   width: 900px;
   height: 600px;
-  position: relative;
-  background: radial-gradient(circle at 70% 20%, #1a2230, #05070b 80%);
   overflow: hidden;
+
+  background:
+    radial-gradient(circle at 80% 20%, rgba(80,120,255,0.25), transparent 60%),
+    #05070b;
+}
+
+/* ===== СТОЛ (PNG ТЕКСТУРА) ===== */
+.desk {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 200px;
+
+  background-image: url(#DESK_BASE64#);
+  background-size: cover;
+}
+
+/* ===== МОНИТОР (PNG) ===== */
+.monitor {
+  position: absolute;
+  left: 120px;
+  bottom: 150px;
+  width: 520px;
+}
+
+/* ===== ЭКРАН ===== */
+.screen {
+  position: absolute;
+  left: 70px;
+  top: 60px;
+  width: 380px;
+  height: 240px;
+
+  background: #061006;
+  color: #33ff88;
+  padding: 12px;
+  font-family: monospace;
+
+  box-shadow: inset 0 0 40px black;
+}
+
+/* CRT */
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.4),
+    transparent 2px
+  );
+}
+
+/* ===== КАКТУС ===== */
+.cactus {
+  position: absolute;
+  right: 120px;
+  bottom: 140px;
+  width: 100px;
 }
 
 /* ===== ОКНО ===== */
 .window {
   position: absolute;
-  right: 70px;
-  top: 60px;
-  width: 240px;
-  height: 180px;
-  background: linear-gradient(#0a1322, #02040a);
+  right: 60px;
+  top: 40px;
+  width: 260px;
+  height: 200px;
+  background: #0a1322;
   border: 6px solid #1a2230;
-  overflow: hidden;
 }
 
-/* ===== ДОЖДЬ ===== */
-#rain {
+/* дождь */
+.rain {
   position: absolute;
   inset: 0;
-}
-
-/* ===== МОНИТОР ===== */
-.monitor {
-  position: absolute;
-  left: 40px;
-  top: 80px;
-  width: 620px;
-  height: 420px;
-  background: linear-gradient(#cfcfcf, #9e9e9e);
-  border-radius: 10px;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 30px 60px rgba(0,0,0,0.7);
-  padding: 25px;
-}
-
-/* ===== ЭКРАН ===== */
-.screen-frame {
-  width: 100%;
-  height: 100%;
-  background: #0a0f0a;
-  border: 8px solid #1c1c1c;
-  position: relative;
-  overflow: hidden;
-}
-
-/* ===== CRT ===== */
-.screen {
-  height: 100%;
-  color: #33ff88;
-  padding: 16px;
-  text-shadow: 0 0 10px rgba(0,255,120,0.8);
-  position: relative;
-}
-
-/* ===== TEXTURE: NOISE ===== */
-.screen::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAKUlEQVR42mNgGAWjYBSMglEwCkb9D8TAwMDw/4eHh5GBgYGxgYGBgYAAAD//wMA6VwP1xYgnP0AAAAASUVORK5CYII=");
-  opacity: 0.25;
-  mix-blend-mode: overlay;
-}
-
-/* ===== TEXTURE: SCANLINES ===== */
-.screen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
+  background: repeating-linear-gradient(
     to bottom,
-    rgba(0,0,0,0.4) 0px,
-    transparent 2px
+    rgba(255,255,255,0.1),
+    transparent 6px
   );
-  mix-blend-mode: multiply;
+  animation: rain 0.4s linear infinite;
 }
 
-/* ===== ВИНЬЕТКА ===== */
-.vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.6));
-  pointer-events: none;
+@keyframes rain {
+  from { transform: translateY(-10px); }
+  to { transform: translateY(10px); }
 }
-
-/* ===== СТЕКЛО ===== */
-.glass {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    120deg,
-    rgba(255,255,255,0.05),
-    transparent 40%
-  );
-  pointer-events: none;
-}
-
-/* ===== ТЕКСТ ===== */
-.terminal {
-  font-size: 14px;
-  white-space: pre-wrap;
-}
-
-.cursor {
-  display: inline-block;
-  width: 8px;
-  height: 14px;
-  background: #33ff88;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
 </style>
 </head>
 
@@ -143,76 +116,29 @@ body {
 <div class="scene">
 
   <div class="window">
-    <canvas id="rain"></canvas>
+    <div class="rain"></div>
   </div>
 
-  <div class="monitor">
-    <div class="screen-frame">
-      <div class="screen">
-        <div class="terminal">
-> login admin
-ACCESS GRANTED
+  <div class="desk"></div>
 
-> check_net
-STATUS: OK
+  <!-- МОНИТОР PNG -->
+  <img class="monitor" src="#MONITOR_BASE64#">
+
+  <!-- ЭКРАН -->
+  <div class="screen">
+> login admin  
+ACCESS GRANTED  
+
+> run scan  
+OK  
 
 > _
-<span class="cursor"></span>
-        </div>
-
-        <div class="glass"></div>
-        <div class="vignette"></div>
-      </div>
-    </div>
   </div>
 
+  <!-- КАКТУС PNG -->
+  <img class="cactus" src="#CACTUS_BASE64#">
+
 </div>
-
-<script>
-const canvas = document.getElementById("rain");
-const ctx = canvas.getContext("2d");
-
-canvas.width = 240;
-canvas.height = 180;
-
-let drops = [];
-
-for (let i = 0; i < 150; i++) {
-  drops.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    l: Math.random() * 15 + 8,
-    speed: Math.random() * 4 + 4
-  });
-}
-
-function drawRain() {
-  ctx.fillStyle = "rgba(0,0,0,0.25)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.strokeStyle = "rgba(180,200,255,0.35)";
-  ctx.lineWidth = 1;
-
-  drops.forEach(d => {
-    ctx.beginPath();
-    ctx.moveTo(d.x, d.y);
-    ctx.lineTo(d.x - 2, d.y + d.l);
-    ctx.stroke();
-
-    d.y += d.speed;
-    d.x -= 0.3;
-
-    if (d.y > canvas.height) {
-      d.y = -10;
-      d.x = Math.random() * canvas.width;
-    }
-  });
-
-  requestAnimationFrame(drawRain);
-}
-
-drawRain();
-</script>
 
 </body>
 </html>
