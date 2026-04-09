@@ -2,86 +2,29 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Final Scene (Base64 Assets)</title>
+<title>Optimized Scene</title>
 
 <style>
 body {
   margin: 0;
-  height: 100vh;
   background: #05070b;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  font-family: monospace;
 }
 
-/* ===== СЦЕНА ===== */
+/* сцена */
 .scene {
   position: relative;
   width: 900px;
   height: 600px;
+  background: #0b1220;
   overflow: hidden;
-
-  background:
-    radial-gradient(circle at 80% 20%, rgba(80,120,255,0.25), transparent 60%),
-    #05070b;
 }
 
-/* ===== СТОЛ (PNG ТЕКСТУРА) ===== */
-.desk {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 200px;
-
-  background-image: url(#DESK_BASE64#);
-  background-size: cover;
-}
-
-/* ===== МОНИТОР (PNG) ===== */
-.monitor {
-  position: absolute;
-  left: 120px;
-  bottom: 150px;
-  width: 520px;
-}
-
-/* ===== ЭКРАН ===== */
-.screen {
-  position: absolute;
-  left: 70px;
-  top: 60px;
-  width: 380px;
-  height: 240px;
-
-  background: #061006;
-  color: #33ff88;
-  padding: 12px;
-  font-family: monospace;
-
-  box-shadow: inset 0 0 40px black;
-}
-
-/* CRT */
-.screen::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,0.4),
-    transparent 2px
-  );
-}
-
-/* ===== КАКТУС ===== */
-.cactus {
-  position: absolute;
-  right: 120px;
-  bottom: 140px;
-  width: 100px;
-}
-
-/* ===== ОКНО ===== */
+/* окно */
 .window {
   position: absolute;
   right: 60px;
@@ -92,21 +35,99 @@ body {
   border: 6px solid #1a2230;
 }
 
-/* дождь */
+/* лёгкий дождь */
 .rain {
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,0.1),
+    rgba(255,255,255,0.08),
     transparent 6px
   );
-  animation: rain 0.4s linear infinite;
+  opacity: 0.25;
 }
 
-@keyframes rain {
-  from { transform: translateY(-10px); }
-  to { transform: translateY(10px); }
+/* стол (текстура через градиент) */
+.desk {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 180px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #3b2a1f,
+      #3b2a1f 10px,
+      #332217 10px,
+      #332217 20px
+    );
+}
+
+/* монитор */
+.monitor {
+  position: absolute;
+  left: 140px;
+  bottom: 140px;
+  width: 520px;
+  height: 340px;
+  background: linear-gradient(#dcdcdc, #8f8f8f);
+  border-radius: 14px;
+  padding: 20px;
+  transform: perspective(800px) rotateX(5deg);
+}
+
+/* экран */
+.screen {
+  width: 100%;
+  height: 100%;
+  background: #071107;
+  border: 8px solid #1c1c1c;
+  color: #33ff88;
+  padding: 16px;
+  position: relative;
+}
+
+/* CRT */
+.screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.35),
+    transparent 2px
+  );
+}
+
+/* текст */
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: #33ff88;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* 🌵 SVG кактус */
+.cactus {
+  position: absolute;
+  right: 140px;
+  bottom: 130px;
+  width: 80px;
+}
+
+/* клавиатура */
+.keyboard {
+  position: absolute;
+  left: 160px;
+  bottom: 20px;
+  width: 400px;
+  height: 60px;
+  background: #666;
 }
 </style>
 </head>
@@ -121,22 +142,24 @@ body {
 
   <div class="desk"></div>
 
-  <!-- МОНИТОР PNG -->
-  <img class="monitor" src="#MONITOR_BASE64#">
-
-  <!-- ЭКРАН -->
-  <div class="screen">
-> login admin  
-ACCESS GRANTED  
-
-> run scan  
-OK  
-
-> _
+  <div class="monitor">
+    <div class="screen">
+> login admin<br>
+ACCESS GRANTED<br><br>
+> check_net<br>
+STATUS: OK<br><br>
+> <span class="cursor"></span>
+    </div>
   </div>
 
-  <!-- КАКТУС PNG -->
-  <img class="cactus" src="#CACTUS_BASE64#">
+  <!-- SVG кактус -->
+  <svg class="cactus" viewBox="0 0 100 150">
+    <rect x="40" y="40" width="20" height="80" rx="10" fill="#2ecc71"/>
+    <rect x="20" y="60" width="15" height="40" rx="8" fill="#2ecc71"/>
+    <rect x="65" y="70" width="15" height="35" rx="8" fill="#2ecc71"/>
+  </svg>
+
+  <div class="keyboard"></div>
 
 </div>
 
