@@ -2,13 +2,12 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>CRT Night Terminal</title>
+<title>CRT Atmosphere v2</title>
 
 <style>
-/* ===== RESET ===== */
 body {
   margin: 0;
-  background: #0b0f14;
+  background: #0a0d12;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -16,104 +15,126 @@ body {
   font-family: monospace;
 }
 
-/* ===== SCENE ===== */
+/* ===== СЦЕНА ===== */
 .scene {
   position: relative;
   width: 900px;
   height: 600px;
-  background: radial-gradient(circle at 50% 20%, #1a2230, #0b0f14 80%);
+  background: radial-gradient(circle at 70% 20%, #1a2230, #05070b 80%);
   overflow: hidden;
 }
 
-/* ===== WINDOW ===== */
+/* ===== ОКНО ===== */
 .window {
   position: absolute;
   right: 60px;
-  top: 60px;
-  width: 220px;
-  height: 160px;
-  background: linear-gradient(#0f1a2b, #05080f);
+  top: 50px;
+  width: 240px;
+  height: 180px;
+  background: linear-gradient(#0a1422, #020409);
   border: 6px solid #1c2330;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
   overflow: hidden;
 }
 
-/* ===== RAIN CANVAS ===== */
+/* ===== ДОЖДЬ ===== */
 #rain {
   position: absolute;
   inset: 0;
 }
 
-/* ===== CACTUS ===== */
+/* ===== КАКТУС ===== */
 .cactus {
   position: absolute;
-  right: 120px;
-  bottom: 90px;
-  width: 26px;
-  height: 50px;
-  background: #1f8f5a;
-  border-radius: 6px;
-  box-shadow: inset -3px 0 0 rgba(0,0,0,0.3);
+  right: 130px;
+  bottom: 80px;
+  width: 28px;
+  height: 60px;
+  background: #1c7a4d;
+  border-radius: 8px;
+  box-shadow:
+    inset -4px 0 0 rgba(0,0,0,0.4),
+    0 0 10px rgba(0,255,120,0.1);
 }
 
-/* ===== MONITOR ===== */
+/* ===== МОНИТОР КОРПУС ===== */
 .monitor {
   position: absolute;
-  left: 60px;
+  left: 50px;
   top: 80px;
-  width: 560px;
-  height: 360px;
-  background: #0a0f0a;
-  border: 12px solid #2a2a2a;
-  border-radius: 6px;
+  width: 600px;
+  height: 400px;
+  background: linear-gradient(#c9c9c9, #9a9a9a);
+  border-radius: 8px;
   box-shadow:
-    0 0 40px rgba(0,255,120,0.08),
-    inset 0 0 30px rgba(0,255,120,0.05);
+    inset 0 0 10px rgba(0,0,0,0.4),
+    0 20px 40px rgba(0,0,0,0.6);
+  padding: 20px;
+}
+
+/* ===== ЭКРАН (внутри) ===== */
+.screen-frame {
+  width: 100%;
+  height: 100%;
+  background: #0a0f0a;
+  border: 6px solid #222;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 0 20px rgba(0,0,0,0.9),
+    inset 0 0 40px rgba(0,255,120,0.08);
+  position: relative;
   overflow: hidden;
 }
 
-/* ===== CRT GLOW ===== */
-.screen {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  color: #33ff88;
-  padding: 14px;
-  text-shadow: 0 0 6px rgba(0,255,120,0.7);
-  animation: flicker 0.12s infinite;
+/* ===== СВЕЧЕНИЕ ЭКРАНА НА СЦЕНУ ===== */
+.screen-glow {
+  position: absolute;
+  left: 50px;
+  top: 80px;
+  width: 600px;
+  height: 400px;
+  pointer-events: none;
+  box-shadow: 0 0 120px rgba(0,255,120,0.08);
 }
 
-/* ===== SCANLINES ===== */
+/* ===== CRT ===== */
+.screen {
+  color: #33ff88;
+  padding: 14px;
+  text-shadow: 0 0 8px rgba(0,255,120,0.8);
+  animation: flicker 0.15s infinite;
+  position: relative;
+  height: 100%;
+}
+
+/* scanlines */
 .screen::after {
   content: "";
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(0,0,0,0.3) 0px,
+    rgba(0,0,0,0.35) 0px,
     transparent 2px
   );
-  pointer-events: none;
 }
 
-/* ===== NOISE ===== */
+/* noise */
 .screen::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
-  opacity: 0.15;
-  pointer-events: none;
+  background: url("https://www.transparenttextures.com/patterns/noise.png");
+  opacity: 0.2;
 }
 
-/* ===== TEXT ===== */
+/* ===== ТЕКСТ ===== */
 .terminal {
   font-size: 14px;
-  line-height: 1.4;
   white-space: pre-wrap;
 }
 
-/* ===== CURSOR ===== */
+/* ===== КУРСОР ===== */
 .cursor {
   display: inline-block;
   width: 8px;
@@ -122,19 +143,16 @@ body {
   animation: blink 1s infinite;
 }
 
-/* ===== STATUS ===== */
+/* ===== СТАТУС ===== */
 .status {
   position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0,0,0,0.6);
-  padding: 4px;
+  width: 100%;
   font-size: 12px;
-  border-top: 1px solid #1a1a1a;
+  background: rgba(0,0,0,0.6);
 }
 
-/* ===== ANIMATIONS ===== */
+/* ===== АНИМАЦИИ ===== */
 @keyframes blink {
   50% { opacity: 0; }
 }
@@ -143,15 +161,6 @@ body {
   0% { opacity: 0.95; }
   50% { opacity: 1; }
   100% { opacity: 0.92; }
-}
-
-/* ===== LIGHTNING FLASH ===== */
-.flash {
-  position: absolute;
-  inset: 0;
-  background: white;
-  opacity: 0;
-  pointer-events: none;
 }
 
 </style>
@@ -167,9 +176,12 @@ body {
 
   <div class="cactus"></div>
 
+  <div class="screen-glow"></div>
+
   <div class="monitor">
-    <div class="screen">
-      <div class="terminal" id="terminal">
+    <div class="screen-frame">
+      <div class="screen">
+        <div class="terminal">
 > login admin
 ACCESS GRANTED
 
@@ -178,51 +190,49 @@ STATUS: OK
 
 > _
 <span class="cursor"></span>
-      </div>
+        </div>
 
-      <div class="status">
-STATUS: OK | TIME: 02:14 | NET: STABLE
+        <div class="status">
+STATUS: OK | TIME: 02:41 | NET: STABLE
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="flash" id="flash"></div>
-
 </div>
 
 <script>
-
-/* ===== RAIN SYSTEM ===== */
 const canvas = document.getElementById("rain");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 220;
-canvas.height = 160;
+canvas.width = 240;
+canvas.height = 180;
 
 let drops = [];
 
-for (let i = 0; i < 120; i++) {
+for (let i = 0; i < 150; i++) {
   drops.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     l: Math.random() * 20 + 10,
-    speed: Math.random() * 4 + 4
+    speed: Math.random() * 5 + 5
   });
 }
 
 function drawRain() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.strokeStyle = "rgba(180,200,255,0.4)";
+  ctx.strokeStyle = "rgba(180,200,255,0.5)";
   ctx.lineWidth = 1;
 
   drops.forEach(d => {
     ctx.beginPath();
     ctx.moveTo(d.x, d.y);
-    ctx.lineTo(d.x, d.y + d.l);
+    ctx.lineTo(d.x - 2, d.y + d.l); // наклон
     ctx.stroke();
 
     d.y += d.speed;
+    d.x -= 0.5;
 
     if (d.y > canvas.height) {
       d.y = -20;
@@ -234,24 +244,6 @@ function drawRain() {
 }
 
 drawRain();
-
-/* ===== LIGHTNING ===== */
-function lightning() {
-  const flash = document.getElementById("flash");
-
-  if (Math.random() < 0.01) {
-    flash.style.opacity = 0.8;
-
-    setTimeout(() => {
-      flash.style.opacity = 0;
-    }, 100);
-  }
-
-  requestAnimationFrame(lightning);
-}
-
-lightning();
-
 </script>
 
 </body>
