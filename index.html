@@ -2,17 +2,17 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>CRT Security Terminal</title>
+<title>CRT Night Terminal</title>
 
 <style>
 /* ===== RESET ===== */
 body {
   margin: 0;
-  background: #111;
+  background: #0b0f14;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   font-family: monospace;
 }
 
@@ -21,95 +21,139 @@ body {
   position: relative;
   width: 900px;
   height: 600px;
-  background: #1a1a1a;
+  background: radial-gradient(circle at 50% 20%, #1a2230, #0b0f14 80%);
   overflow: hidden;
 }
 
-/* ===== WINDOW (SKY) ===== */
+/* ===== WINDOW ===== */
 .window {
   position: absolute;
-  right: 40px;
-  top: 40px;
-  width: 200px;
-  height: 140px;
-  border: 4px solid #222;
-  background: rgb(20, 20, 60);
-  transition: background 0.2s linear;
+  right: 60px;
+  top: 60px;
+  width: 220px;
+  height: 160px;
+  background: linear-gradient(#0f1a2b, #05080f);
+  border: 6px solid #1c2330;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+  overflow: hidden;
+}
+
+/* ===== RAIN CANVAS ===== */
+#rain {
+  position: absolute;
+  inset: 0;
 }
 
 /* ===== CACTUS ===== */
 .cactus {
   position: absolute;
-  right: 100px;
-  bottom: 80px;
-  width: 20px;
-  height: 40px;
-  background: #2ecc71;
+  right: 120px;
+  bottom: 90px;
+  width: 26px;
+  height: 50px;
+  background: #1f8f5a;
+  border-radius: 6px;
+  box-shadow: inset -3px 0 0 rgba(0,0,0,0.3);
 }
 
 /* ===== MONITOR ===== */
 .monitor {
   position: absolute;
-  left: 50px;
-  top: 50px;
-  width: 600px;
-  height: 400px;
-  background: #050505;
-  border: 10px solid #333;
-  box-shadow: 0 0 20px rgba(0,255,0,0.2);
-  color: #33ff33;
-  padding: 10px;
+  left: 60px;
+  top: 80px;
+  width: 560px;
+  height: 360px;
+  background: #0a0f0a;
+  border: 12px solid #2a2a2a;
+  border-radius: 6px;
+  box-shadow:
+    0 0 40px rgba(0,255,120,0.08),
+    inset 0 0 30px rgba(0,255,120,0.05);
   overflow: hidden;
 }
 
-/* ===== CRT SCANLINES ===== */
-.monitor::after {
+/* ===== CRT GLOW ===== */
+.screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  color: #33ff88;
+  padding: 14px;
+  text-shadow: 0 0 6px rgba(0,255,120,0.7);
+  animation: flicker 0.12s infinite;
+}
+
+/* ===== SCANLINES ===== */
+.screen::after {
   content: "";
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(0,0,0,0.25) 0px,
+    rgba(0,0,0,0.3) 0px,
     transparent 2px
   );
   pointer-events: none;
 }
 
-/* ===== TERMINAL ===== */
+/* ===== NOISE ===== */
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* ===== TEXT ===== */
 .terminal {
   font-size: 14px;
   line-height: 1.4;
   white-space: pre-wrap;
 }
 
+/* ===== CURSOR ===== */
 .cursor {
   display: inline-block;
   width: 8px;
   height: 14px;
-  background: #33ff33;
+  background: #33ff88;
   animation: blink 1s infinite;
 }
 
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-/* ===== STATUS BAR ===== */
+/* ===== STATUS ===== */
 .status {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: #111;
+  background: rgba(0,0,0,0.6);
   padding: 4px;
   font-size: 12px;
-  border-top: 1px solid #333;
+  border-top: 1px solid #1a1a1a;
 }
 
-/* ===== GLOW ===== */
-.glow {
-  text-shadow: 0 0 5px #33ff33;
+/* ===== ANIMATIONS ===== */
+@keyframes blink {
+  50% { opacity: 0; }
 }
+
+@keyframes flicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 1; }
+  100% { opacity: 0.92; }
+}
+
+/* ===== LIGHTNING FLASH ===== */
+.flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+}
+
 </style>
 </head>
 
@@ -117,11 +161,15 @@ body {
 
 <div class="scene">
 
-  <div class="window" id="window"></div>
+  <div class="window">
+    <canvas id="rain"></canvas>
+  </div>
+
   <div class="cactus"></div>
 
   <div class="monitor">
-    <div class="terminal glow" id="terminal">
+    <div class="screen">
+      <div class="terminal" id="terminal">
 > login admin
 ACCESS GRANTED
 
@@ -130,90 +178,79 @@ STATUS: OK
 
 > _
 <span class="cursor"></span>
-    </div>
+      </div>
 
-    <div class="status" id="status">
-STATUS: OK | TIME: NIGHT
+      <div class="status">
+STATUS: OK | TIME: 02:14 | NET: STABLE
+      </div>
     </div>
   </div>
+
+  <div class="flash" id="flash"></div>
 
 </div>
 
 <script>
 
-/*
-  time:
-  0 → ночь
-  0.25 → рассвет
-  0.5 → день
-  0.75 → закат
-  1 → ночь
-*/
+/* ===== RAIN SYSTEM ===== */
+const canvas = document.getElementById("rain");
+const ctx = canvas.getContext("2d");
 
-let time = 0;
-const speed = 0.00003; // полный цикл ~8-10 минут
+canvas.width = 220;
+canvas.height = 160;
 
-function updateCycle() {
-  time += speed;
-  if (time > 1) time = 0;
+let drops = [];
 
-  updateSky();
-  updateStatus();
-
-  requestAnimationFrame(updateCycle);
+for (let i = 0; i < 120; i++) {
+  drops.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    l: Math.random() * 20 + 10,
+    speed: Math.random() * 4 + 4
+  });
 }
 
-function updateSky() {
-  const sky = document.getElementById("window");
+function drawRain() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  let r, g, b;
+  ctx.strokeStyle = "rgba(180,200,255,0.4)";
+  ctx.lineWidth = 1;
 
-  if (time < 0.25) {
-    // ночь → рассвет
-    let t = time / 0.25;
-    r = 20 + t * 100;
-    g = 20 + t * 80;
-    b = 60 + t * 120;
+  drops.forEach(d => {
+    ctx.beginPath();
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(d.x, d.y + d.l);
+    ctx.stroke();
 
-  } else if (time < 0.5) {
-    // рассвет → день
-    let t = (time - 0.25) / 0.25;
-    r = 120 + t * 135;
-    g = 100 + t * 155;
-    b = 180 + t * 75;
+    d.y += d.speed;
 
-  } else if (time < 0.75) {
-    // день → закат
-    let t = (time - 0.5) / 0.25;
-    r = 255;
-    g = 255 - t * 155;
-    b = 255 - t * 200;
+    if (d.y > canvas.height) {
+      d.y = -20;
+      d.x = Math.random() * canvas.width;
+    }
+  });
 
-  } else {
-    // закат → ночь
-    let t = (time - 0.75) / 0.25;
-    r = 255 - t * 235;
-    g = 100 - t * 80;
-    b = 55 - t * 20;
+  requestAnimationFrame(drawRain);
+}
+
+drawRain();
+
+/* ===== LIGHTNING ===== */
+function lightning() {
+  const flash = document.getElementById("flash");
+
+  if (Math.random() < 0.01) {
+    flash.style.opacity = 0.8;
+
+    setTimeout(() => {
+      flash.style.opacity = 0;
+    }, 100);
   }
 
-  sky.style.background = `rgb(${r|0},${g|0},${b|0})`;
+  requestAnimationFrame(lightning);
 }
 
-function updateStatus() {
-  const status = document.getElementById("status");
-
-  let label = "";
-
-  if (time < 0.25) label = "NIGHT";
-  else if (time < 0.5) label = "SUNRISE";
-  else if (time < 0.75) label = "DAY";
-  else label = "SUNSET";
-
-  status.innerText = "STATUS: OK | TIME: " + label;
-}
-
-updateCycle();
+lightning();
 
 </script>
 
